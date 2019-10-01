@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "otk_db.fullname" . }}
+  labels:
+{{ include "otk_db.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "otk_db.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "otk_db.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+           - name: {{ "cassandra-port" }}
+             containerPort: {{ .Values.service.port }}
+             protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+              - cqlsh
+              - -u cassandra
+              - -p cassandra
+              - -e describe keyspaces
+            initialDelaySeconds: 60
+            failureThreshold: 3
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 9042
+            initialDelaySeconds: 60
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+        - name: {{ .Values.cassandraLoadKeySpace.name }}
+          image: "{{ .Values.cassandraLoadKeySpace.repository }}:{{ .Values.cassandraLoadKeySpace.tag }}"
+          imagePullPolicy: {{ .Values.cassandraLoadKeySpace.pullPolicy }}

@@ -1,0 +1,17 @@
+services:
+  cassandra:
+    hostname: cassandra
+    image: cassandra:latest
+    ports:
+      - "9042:9042"
+    environment:
+      CASSANDRA_START_RPC: "true"
+      CASSANDRA_SEEDS: "cassandra"
+      CASSANDRA_CLUSTER_NAME: "otk_cassandra"
+    healthcheck:
+      test: ["CMD", "cqlsh", "-u cassandra", "-p cassandra" ,"-e describe keyspaces"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+  cassandraloadkeyspace:
+    image: test/cassandra
