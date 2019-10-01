@@ -31,13 +31,13 @@ spec:
               - -u cassandra
               - -p cassandra
               - -e describe keyspaces
-            initialDelaySeconds: 60
+            initialDelaySeconds: 30
             failureThreshold: 3
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
               port: 9042
-            initialDelaySeconds: 60
+            initialDelaySeconds: 30
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -52,6 +52,8 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-        - name: {{ .Values.cassandraLoadKeySpace.name }}
-          image: "{{ .Values.cassandraLoadKeySpace.repository }}:{{ .Values.cassandraLoadKeySpace.tag }}"
-          imagePullPolicy: {{ .Values.cassandraLoadKeySpace.pullPolicy }}
+      # initContainers:
+      #   - name: {{ .Values.cassandraLoadKeySpace.name }}
+      #     image: "{{ .Values.cassandraLoadKeySpace.repository }}:{{ .Values.cassandraLoadKeySpace.tag }}"
+      #     imagePullPolicy: {{ .Values.cassandraLoadKeySpace.pullPolicy }}
+      # restartPolicy: Never

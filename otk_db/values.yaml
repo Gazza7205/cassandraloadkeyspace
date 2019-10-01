@@ -10,7 +10,7 @@ image:
   pullPolicy: IfNotPresent
 
 cassandraLoadKeySpace:
-  repository: docker.brcmlabs.com/repository/docker-hosted/cassandraLoadKeySpace
+  repository: docker.brcmlabs.com/repository/docker-hosted/cassandraloadkeyspace
   tag: latest
   pullPolicy: Always
   name: cassandraloadkeyspace
