@@ -8,9 +8,9 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - port: {{ .Values.service.port }}
-      targetPort: cassandra-port
+      targetPort: {{ .Values.service.port }}
       protocol: TCP
       name: cassandra-port
   selector:
-    app.kubernetes.io/name: {{ .Values.service.name }}
+    app.kubernetes.io/name: {{ .Values.deployment.name }}
     app.kubernetes.io/instance: {{ .Release.Name }}

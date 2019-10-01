@@ -9,6 +9,9 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+deployment:
+  name: cassandra-otk
+
 cassandraLoadKeySpace:
   repository: docker.brcmlabs.com/repository/docker-hosted/cassandraloadkeyspace
   tag: latest
